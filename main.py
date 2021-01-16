@@ -10,7 +10,7 @@ from email.header import Header
 from email import parser
 import poplib
 
-sd
+
 
 # 邮件发送
 def send_MAIL(title, send_msg, receiver):
