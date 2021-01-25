@@ -55,7 +55,7 @@ def get_result(driver):
         else:
             return True
     except: 
-        print('当前时间段无法填报')
+        return False
 
 
 # 常规项目：温度选择+体温填报
@@ -140,19 +140,24 @@ def run_main(name, username, password, mail_address, achieve_count, correct_send
             isRun = True
             send_MAIL(title="体温填报失败", send_msg="当前可能无法填报，您可以自行打开检查，或者等待填报成功的邮件", receiver=mail_address)
 
+        
         # 常规项目填报
         temp_common(driver)
         
         # 非常规项目填报
         temp_special(driver)
+        
         home(driver)
+        
 
         sleep(1)
         driver.find_element_by_id("save").click()
-        achieve_count += 1
-        send_msg = "亲爱的" + name + "同学:体温填报完成！"
-        send_MAIL(title="体温填报成功", send_msg=send_msg, receiver=mail_address)
-        correct_send_mail_count += 1
+        sleep(1)
+        if get_result(driver):
+            achieve_count += 1
+            send_msg = "亲爱的" + name + "同学:体温填报完成！"
+            send_MAIL(title="体温填报成功", send_msg=send_msg, receiver=mail_address)
+            correct_send_mail_count += 1
     except:
         sleep(5)
         send_MAIL(title="体温填报失败", send_msg="当前的填报项目可能出现了变化，建议您自行填报", receiver=mail_address)
