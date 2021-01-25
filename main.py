@@ -146,12 +146,17 @@ def run_main(name, username, password, mail_address, achieve_count, correct_send
 
         sleep(1)
         driver.find_element_by_id("save").click()
-        sleep(1)
-        if get_result(driver):
-            achieve_count += 1
-            send_msg = "亲爱的" + name + "同学:体温填报完成！"
-            send_MAIL(title="体温填报成功", send_msg=send_msg, receiver=mail_address)
-            correct_send_mail_count += 1
+        sleep(2)
+        try:
+            driver.find_element_by_class_name("mdui-list-item-content").text
+            if get_result(driver):
+                achieve_count += 1
+                send_msg = "亲爱的" + name + "同学:体温填报完成！"
+                send_MAIL(title="体温填报成功", send_msg=send_msg, receiver=mail_address)
+                correct_send_mail_count += 1
+        except: 
+            isRun = True
+
     except:
         sleep(5)
         send_MAIL(title="体温填报失败", send_msg="当前的填报项目可能出现了变化，建议您自行填报", receiver=mail_address)
