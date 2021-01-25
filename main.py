@@ -91,12 +91,6 @@ def temp_special(driver):
 def home(driver):
     div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
     home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
-    
-    if div ==home_text:
-        driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()def home(driver):
-    div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
-    home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
-    
     if div ==home_text:
         driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()
 
