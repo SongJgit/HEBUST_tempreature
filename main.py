@@ -45,6 +45,19 @@ def send_MAIL(title, send_msg, receiver):
         pass
 
 
+# 判断是否已经完成填报
+def get_result(driver):
+    try:
+        text = driver.find_element_by_class_name("mdui-list-item-content").text
+
+        if text.split('\n')[1]=='未完成':
+            return False
+        else:
+            return True
+    except: 
+        print('当前时间段无法填报')
+
+
 # 常规项目：温度选择+体温填报
 def temp_common(driver):
     driver.find_element_by_xpath('//*[@id="main"]/div[1]/label[2]').click()
@@ -73,6 +86,19 @@ def temp_special(driver):
     time.sleep(0.3)
     # 核算检测结果
     driver.find_element_by_xpath('//*[@id="main"]/div[11]/label[2]').click()
+
+
+def home(driver):
+    div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
+    home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
+    
+    if div ==home_text:
+        driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()def home(driver):
+    div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
+    home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
+    
+    if div ==home_text:
+        driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()
 
 
 # 读取用户账户密码
@@ -119,6 +145,7 @@ def run_main(name, username, password, mail_address, achieve_count, correct_send
         
         # 非常规项目填报
         temp_special(driver)
+        home(driver)
 
         sleep(1)
         driver.find_element_by_id("save").click()
