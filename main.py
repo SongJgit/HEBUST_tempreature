@@ -11,7 +11,6 @@ from email import parser
 import poplib
 
 
-
 # 邮件发送
 def send_MAIL(title, send_msg, receiver):
     """
@@ -21,8 +20,8 @@ def send_MAIL(title, send_msg, receiver):
     :return:
     """
     # 发件人地址及密码
-    send_address = ""  # 你的邮箱
-    send_pwd = "" # 你邮箱的密码，不是真正的密码，是原邮箱生成的POP3内个
+    send_address = "312091156@qq.com"  # 你的邮箱
+    send_pwd = "rukfwyvtueizcagc" # 你邮箱的密码，不是真正的密码，是原邮箱生成的POP3内个
 
     # 服务器
     smtp_server = 'smtp.qq.com'
@@ -43,19 +42,6 @@ def send_MAIL(title, send_msg, receiver):
         server.quit()
     except:
         pass
-
-
-# 判断是否已经完成填报
-def get_result(driver):
-    try:
-        text = driver.find_element_by_class_name("mdui-list-item-content").text
-
-        if text.split('\n')[1]=='未完成':
-            return False
-        else:
-            return True
-    except: 
-        return False
 
 
 # 常规项目：温度选择+体温填报
@@ -88,13 +74,6 @@ def temp_special(driver):
     driver.find_element_by_xpath('//*[@id="main"]/div[11]/label[2]').click()
 
 
-def home(driver):
-    div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
-    home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
-    if div ==home_text:
-        driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()
-
-
 # 读取用户账户密码
 def get_usr_info(filePath):
     usr_info = None
@@ -105,6 +84,26 @@ def get_usr_info(filePath):
        print("出现了错误")
        pass
     return usr_info
+
+
+def home(driver):
+    div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
+    home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
+    if div ==home_text:
+        driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()
+
+
+# 判断是否已经完成填报
+def get_result(driver):
+    # 未完成或无法获取则返回false，完成则返回true
+    try:
+        text = driver.find_element_by_class_name("mdui-list-item-content").text
+        if text.split('\n')[1]=='未完成':
+            return False
+        else:
+            return True
+    except: 
+        return False
 
 
 # 填写脚本程序
@@ -128,35 +127,47 @@ def run_main(name, username, password, mail_address, achieve_count, correct_send
         driver.find_element_by_name('pwd').send_keys(password)
         driver.find_element_by_id('login').click()
         sleep(2)
-        try:
-            driver.find_element_by_class_name("mdui-list-item-content").click()
-        except:
-            isRun = True
-            send_MAIL(title="体温填报失败", send_msg="当前可能无法填报，您可以自行打开检查，或者等待填报成功的邮件", receiver=mail_address)
 
-        
-        # 常规项目填报
-        temp_common(driver)
-        
-        # 非常规项目填报
-        temp_special(driver)
-        
-        home(driver)
-        
+        if get_result(driver):
+            # 判断是否已完成
+            achieve_count += 1
+            correct_send_mail_count += 1
+            
+        else:
+            try:
+                driver.find_element_by_class_name("mdui-list-item-content").click()
+            except:
+                isRun = True
+                send_MAIL(title="体温填报失败", send_msg="当前可能无法填报，您可以自行打开检查，或者等待填报成功的邮件", receiver=mail_address)
 
-        sleep(1)
-        driver.find_element_by_id("save").click()
-        sleep(2)
-        try:
-            driver.find_element_by_class_name("mdui-list-item-content").text
-            if get_result(driver):
-                achieve_count += 1
-                send_msg = "亲爱的" + name + "同学:体温填报完成！"
-                send_MAIL(title="体温填报成功", send_msg=send_msg, receiver=mail_address)
-                correct_send_mail_count += 1
-        except: 
-            isRun = True
+            # 常规项目填报
+            temp_common(driver)
+            # 近日健康状况
+            driver.find_element_by_xpath('//*[@id="main"]/div[7]/label[2]').click()
+            #time.sleep(0.3)
+            # 非常规项目填报
+            # temp_special(driver)
+            
+            try:
+                # 家人项目填报
+                home(driver)
+            except:
+                pass
+            sleep(1)
+            driver.find_element_by_id("save").click()
+            sleep(2)
 
+            try:
+                # 判断是否填报成功
+                driver.find_element_by_class_name("mdui-list-item-content").text
+                if get_result(driver):
+                    achieve_count += 1
+                    correct_send_mail_count += 1
+                    send_msg = "亲爱的" + name + ":体温填报完成！"
+                    send_MAIL(title="体温填报成功", send_msg=send_msg, receiver=mail_address)
+            except:
+                sleep(5)
+                send_MAIL(title="体温填报失败", send_msg="当前的填报项目可能出现了变化，建议您自行填报", receiver=mail_address)
     except:
         sleep(5)
         send_MAIL(title="体温填报失败", send_msg="当前的填报项目可能出现了变化，建议您自行填报", receiver=mail_address)
@@ -206,7 +217,7 @@ if __name__ == '__main__':
             send_MAIL(title="完成人数/总人数 = " + str(achieve_count) + "/" + str(len(usr_info)),
                       send_msg="完成人数/总人数 = " + str(achieve_count) + "/" + str(len(usr_info)) + "\n" +
                                "正确发送邮件" + str(correct_send_mail_count) + "封",
-                      receiver="")  # <-输入你的邮箱，相当于管理员，每天接收总的填报情况
+                      receiver="15562969068@163.com")  # <-输入你的邮箱，相当于管理员，每天接收总的填报情况
 
         elif 10000 <= now_time <= 100000:
             isRun = True
