@@ -20,7 +20,7 @@ def send_MAIL(title, send_msg, receiver):
     :return:
     """
     # 发件人地址及密码
-    send_address = "312091156@qq.com"  # 你的邮箱
+    send_address = "xxxx@qq.com"  # 你的邮箱
     send_pwd = "rukfwyvtueizcagc" # 你邮箱的密码，不是真正的密码，是原邮箱生成的POP3内个
 
     # 服务器
@@ -220,7 +220,7 @@ if __name__ == '__main__':
             send_MAIL(title="完成人数/总人数 = " + str(achieve_count) + "/" + str(len(usr_info)),
                       send_msg="完成人数/总人数 = " + str(achieve_count) + "/" + str(len(usr_info)) + "\n" +
                                "正确发送邮件" + str(correct_send_mail_count) + "封",
-                      receiver="15562969068@163.com")  # <-输入你的邮箱，相当于管理员，每天接收总的填报情况
+                      receiver="xxxx@163.com")  # <-输入你的邮箱，相当于管理员，每天接收总的填报情况
 
         elif 10000 <= now_time <= 100000:
             isRun = True
