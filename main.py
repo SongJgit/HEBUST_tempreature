@@ -73,6 +73,13 @@ def temp_special(driver):
     # 核算检测结果
     driver.find_element_by_xpath('//*[@id="main"]/div[11]/label[2]').click()
 
+# 家人项目
+def home(driver):
+    div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
+    home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
+    if div ==home_text:
+        driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()
+
 
 # 读取用户账户密码
 def get_usr_info(filePath):
@@ -86,11 +93,7 @@ def get_usr_info(filePath):
     return usr_info
 
 
-def home(driver):
-    div = driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[1]').text
-    home_text = '*共同生活家人是否出现新冠肺炎确诊、无症状感染、核酸检测阳性或与确诊疑似病例密接、次密接等情况'
-    if div ==home_text:
-        driver.find_element_by_xpath('//*[@id="main"]/div[9]/label[3]').click()
+
 
 
 # 判断是否已经完成填报
