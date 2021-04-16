@@ -21,7 +21,7 @@ def send_MAIL(title, send_msg, receiver):
     """
     # 发件人地址及密码
     send_address = "xxxx@qq.com"  # 你的邮箱
-    send_pwd = "rukfwyvtueizcagc" # 你邮箱的密码，不是真正的密码，是原邮箱生成的POP3内个
+    send_pwd = "xxxx" # 你邮箱的密码，不是真正的密码，是原邮箱生成的POP3内个
 
     # 服务器
     smtp_server = 'smtp.qq.com'
